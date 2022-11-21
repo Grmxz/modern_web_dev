@@ -1,0 +1,4 @@
+src/connection.ts(14,6): error TS1056: Accessors are only available when targeting ECMAScript 5 and higher.
+src/connection.ts(19,6): error TS1056: Accessors are only available when targeting ECMAScript 5 and higher.
+src/status.ts(21,20): error TS1056: Accessors are only available when targeting ECMAScript 5 and higher.
+src/status.ts(28,13): error TS1056: Accessors are only available when targeting ECMAScript 5 and higher.
