@@ -1,0 +1,9 @@
+<div class="frame" *ngIf="status.connected" style="display: flex">
+   <input type="text" class="message" [(ngModel)]="message" placeholder="Message"/><input type="text" class="recipient" [(ngModel)]="recipient" placeholder="Recepient (opt)"/>
+   <button (click)="send()">send...</button>
+</div>
+<div class="frame" *ngIf="!status.connected">
+   <input type="text" class="message" [(ngModel)]="ip" placeholder="IP:port"/><input type="text" class="recipient" [(ngModel)]="user" placeholder="own username"/>
+   <button (click)="connect()">connect</button>
+</div>
+

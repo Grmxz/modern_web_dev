@@ -1,0 +1,17 @@
+div {
+  color: white;
+  display: inline-block;
+  position: fixed;
+  right: 0;
+  top: 0;
+  padding: 5px;
+  font-size: 10px;
+}
+
+div.connected {
+  background-color: green;
+}
+
+div.not-connected {
+  background-color: orangered;
+}

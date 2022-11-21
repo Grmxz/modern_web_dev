@@ -1,0 +1,3 @@
+<div [ngClass]="{'left':message.sender == status.loggedInUser,'right':message.sender !== status.loggedInUser}">
+  <p>{{message.content}}</p>
+</div>
