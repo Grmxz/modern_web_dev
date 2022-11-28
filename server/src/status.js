@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Status = void 0;
 var connection_1 = require("./connection");
 var Status = /** @class */ (function () {

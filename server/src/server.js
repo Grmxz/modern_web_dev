@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var ws_1 = require("ws");
 var messageprocessor_1 = require("./messageprocessor");
 var status_1 = require("./status");

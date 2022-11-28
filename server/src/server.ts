@@ -2,6 +2,8 @@ import {WebSocketServer} from "ws";
 import {MessageProcessor} from "./messageprocessor";
 import {Status} from "./status";
 
+
+
 const port = 12345;
 const server = new WebSocketServer( { port } );
 

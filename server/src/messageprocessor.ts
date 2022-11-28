@@ -1,6 +1,9 @@
 import {WebSocket} from "ws";
 import {Status} from "./status";
 
+const testFolder = './Images/';
+const fs = require('fs');
+
 export class MessageProcessor
 {
 	private static open( ws: WebSocket , json: any )
@@ -28,6 +31,29 @@ export class MessageProcessor
 		}
 	}
 
+	private static GetCurrentDir( ws: WebSocket , json: any )
+	{
+		let fileList:String[]=[];
+		/*
+		fs.readdir(testFolder, (err, files) => {
+			files.forEach(file => {
+			  fileList.push(file as string);
+			  //console.log(fileList);
+			  console.log(file);
+			});
+		});
+		*/
+		fs.readdirSync(testFolder).forEach(file => {
+			console.log(file);
+			fileList.push(file as string);
+		});
+
+		console.log(fileList);
+		console.log(fileList);
+		console.log(fileList);
+		ws.send( JSON.stringify( { command: "Here" , content: fileList} ) );
+	}
+
 	public static processMessage( ws: WebSocket , message: string )
 	{
 		console.log( "process message : " + message );
@@ -42,6 +68,9 @@ export class MessageProcessor
 				break;
 			case 'message':
 				MessageProcessor.send( ws , json );
+				break;
+			case 'GetCurrentDir':
+				MessageProcessor.GetCurrentDir( ws ,json);
 				break;
 			default:
 				console.log( "unknown command." );

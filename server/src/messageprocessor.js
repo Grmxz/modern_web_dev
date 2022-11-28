@@ -1,7 +1,9 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageProcessor = void 0;
 var status_1 = require("./status");
+var testFolder = './Images/';
+var fs = require('fs');
 var MessageProcessor = /** @class */ (function () {
     function MessageProcessor() {
     }
@@ -23,6 +25,26 @@ var MessageProcessor = /** @class */ (function () {
             });
         }
     };
+    MessageProcessor.GetCurrentDir = function (ws, json) {
+        var fileList = [];
+        /*
+        fs.readdir(testFolder, (err, files) => {
+            files.forEach(file => {
+              fileList.push(file as string);
+              //console.log(fileList);
+              console.log(file);
+            });
+        });
+        */
+        fs.readdirSync(testFolder).forEach(function (file) {
+            console.log(file);
+            fileList.push(file);
+        });
+        console.log(fileList);
+        console.log(fileList);
+        console.log(fileList);
+        ws.send(JSON.stringify({ command: "Here", content: fileList }));
+    };
     MessageProcessor.processMessage = function (ws, message) {
         console.log("process message : " + message);
         var json = JSON.parse(message);
@@ -35,6 +57,9 @@ var MessageProcessor = /** @class */ (function () {
                 break;
             case 'message':
                 MessageProcessor.send(ws, json);
+                break;
+            case 'GetCurrentDir':
+                MessageProcessor.GetCurrentDir(ws, json);
                 break;
             default:
                 console.log("unknown command.");
