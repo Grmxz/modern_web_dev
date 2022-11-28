@@ -12,6 +12,8 @@
   "dependencies": {
     "@types/node": "^18.11.3",
     "@types/ws": "^8.5.3",
+    "csv-parse": "^5.3.3",
+    "image-to-base64": "^2.2.0",
     "ws": "^8.11.0"
   }
 }

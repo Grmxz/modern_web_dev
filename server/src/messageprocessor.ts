@@ -1,8 +1,10 @@
 import {WebSocket} from "ws";
 import {Status} from "./status";
+import {CSVoperator} from "./CSVoperator";
 
 const testFolder = './Images/';
 const fs = require('fs');
+const imageToBase64 = require('image-to-base64');
 
 export class MessageProcessor
 {
@@ -33,7 +35,7 @@ export class MessageProcessor
 
 	private static GetCurrentDir( ws: WebSocket , json: any )
 	{
-		let fileList:String[]=[];
+
 		/*
 		fs.readdir(testFolder, (err, files) => {
 			files.forEach(file => {
@@ -43,16 +45,41 @@ export class MessageProcessor
 			});
 		});
 		*/
-		fs.readdirSync(testFolder).forEach(file => {
-			console.log(file);
+		let fileList:String[]=[];
+
+		fs.readdirSync(testFolder).forEach((file:any) => {
+			//console.log(file);
 			fileList.push(file as string);
 		});
 
 		console.log(fileList);
-		console.log(fileList);
-		console.log(fileList);
 		ws.send( JSON.stringify( { command: "Here" , content: fileList} ) );
 	}
+
+	private static GetContent( ws: WebSocket , json: any )
+	{
+		imageToBase64("Images/test.jpg") // Path to the image
+		.then(
+			(response:any) => {
+				console.log(response); // "cGF0aC90by9maWxlLmpwZw=="
+				//ws.send( JSON.stringify( { command: "directory_data" , content: response} ) );
+			}
+		)
+		.catch(
+			(error:any) => {
+				console.log(error); // Logs an error if there was one
+			}
+		)
+		
+	}
+
+
+
+	
+//or
+//import imageToBase64 from 'image-to-base64/browser';
+
+
 
 	public static processMessage( ws: WebSocket , message: string )
 	{
@@ -71,6 +98,12 @@ export class MessageProcessor
 				break;
 			case 'GetCurrentDir':
 				MessageProcessor.GetCurrentDir( ws ,json);
+				break;
+			case 'GetContent':
+				MessageProcessor.GetContent( ws ,json);
+				break;
+			case 'GetImages':
+				CSVoperator.ImportFromCSV(ws, json);
 				break;
 			default:
 				console.log( "unknown command." );
