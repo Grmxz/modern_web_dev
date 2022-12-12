@@ -1,5 +1,26 @@
 import {Message} from "./message";
 import {StatusService} from "../services/status.service";
+import { ImagesContentComponent } from "../images-content/images-content.component";
+import {GlobalPubSub} from "../global-pub-sub.service";
+
+type Image = {
+   name: string;
+   latitude: string;
+   longitude: string;
+   device: string;
+   size: string;
+   base64encode: string;
+ };
+
+export type File = {
+   name: string;
+   base64encode: string;
+   type: string;
+ };
+
+export let FileList:File[] = [{name:"0",base64encode:"0",type:"0"}];
+
+export let IMAGESCONTENT:Image[]=[{name:"0",latitude:"0",longitude:"0",device:"0",size:"0",base64encode:"0"}];
 
 export class Server
 {
@@ -25,6 +46,8 @@ export class Server
       let retval = new Server( ws , ip , status );
       ws.onopen = (() => {
          ws.send( JSON.stringify( { command: "open" , "user": user } ) );
+         status.GetContent();
+         
       });
       ws.onerror = (() => {
          console.log( "failed" );
@@ -53,6 +76,33 @@ export class Server
       return false;
    }
 
+
+   public GetContent(path:string): boolean
+   {
+      if ( this._ws === null )
+         return false;
+      if ( this._ws.readyState == 1 )
+      {
+         this._ws.send( JSON.stringify( { "command": "GetContent","directory" : "" } ) );
+         //this.status.messages.push( new Message( this.status.loggedInUser , message.recipient , message.content , !message.recipient ) );
+         return true;
+      }
+      return false;
+   }
+
+   public Updirectory(): boolean
+   {
+      if ( this._ws === null )
+         return false;
+      if ( this._ws.readyState == 1 )
+      {
+         this._ws.send( JSON.stringify( { "command": "GetContent","directory" : "" } ) );
+         //this.status.messages.push( new Message( this.status.loggedInUser , message.recipient , message.content , !message.recipient ) );
+         return true;
+      }
+      return false;
+   }
+
    public disconnect(): void
    {
       if ( this._ws !== null )
@@ -73,6 +123,17 @@ export class Server
          let m: Message = new Message( messdata['user'] , this.status.loggedInUser , messdata['content'] , false )
          console.log( m );
          this.status.messages.push( m );
+      }
+      if ( messdata['command'] == 'GetContent' )
+      {
+         //let m: Message = new Message( messdata['user'] , this.status.loggedInUser , messdata['content'] , false )
+         FileList = messdata['content'];
+         console.log(FileList);
+         ImagesContentComponent.arguments(FileList)
+         //GlobalPubSub.fireEvent('sampleEventName', args)
+         window.fireAngularEvent('reloadDirectory',0)
+         //ImagesContentComponent.reload();
+         //this.status.messages.push( m );
       }
    }
 }

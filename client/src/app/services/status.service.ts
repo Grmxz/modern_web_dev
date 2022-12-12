@@ -36,6 +36,27 @@ export class StatusService
       return this.connectedServer.send( message );
    }
 
+   public GetContent(): boolean
+   {
+      if ( this.connectedServer === null )
+         return false;
+      return this.connectedServer.GetContent();
+   }
+
+   public RefreshContent(path:string): boolean
+   {
+      if ( this.connectedServer === null )
+         return false;
+      return this.connectedServer.GetContent();
+   }
+
+   public Updirectory(): boolean
+   {
+      if ( this.connectedServer === null )
+         return false;
+      return this.connectedServer.Updirectory();
+   }
+
    public disconnect(): void
    {
       if ( this.connected )

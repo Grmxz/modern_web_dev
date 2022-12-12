@@ -1,4 +1,4 @@
-div {
+/*div {
   color: white;
   display: inline-block;
   position: fixed;
@@ -15,3 +15,4 @@ div.connected {
 div.not-connected {
   background-color: orangered;
 }
+*/

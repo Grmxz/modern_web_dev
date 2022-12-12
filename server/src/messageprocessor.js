@@ -3,8 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MessageProcessor = void 0;
 var status_1 = require("./status");
 var CSVoperator_1 = require("./CSVoperator");
-var testFolder = './Images/';
+//import Path from 'path'
+var root = './Images/';
 var fs = require('fs');
+var path = require('path');
 var imageToBase64 = require('image-to-base64');
 var MessageProcessor = /** @class */ (function () {
     function MessageProcessor() {
@@ -27,7 +29,7 @@ var MessageProcessor = /** @class */ (function () {
             });
         }
     };
-    MessageProcessor.GetCurrentDir = function (ws, json) {
+    MessageProcessor.GetDirContent = function (ws, json) {
         /*
         fs.readdir(testFolder, (err, files) => {
             files.forEach(file => {
@@ -38,22 +40,80 @@ var MessageProcessor = /** @class */ (function () {
         });
         */
         var fileList = [];
-        fs.readdirSync(testFolder).forEach(function (file) {
+        var dir = json['directory'];
+        fs.readdirSync(root + dir).forEach(function (file) {
             //console.log(file);
             fileList.push(file);
         });
         console.log(fileList);
         ws.send(JSON.stringify({ command: "Here", content: fileList }));
     };
-    MessageProcessor.GetContent = function (ws, json) {
-        imageToBase64("Images/test.jpg") // Path to the image
-            .then(function (response) {
-            console.log(response); // "cGF0aC90by9maWxlLmpwZw=="
-            //ws.send( JSON.stringify( { command: "directory_data" , content: response} ) );
-        })
-            .catch(function (error) {
-            console.log(error); // Logs an error if there was one
+    MessageProcessor.ChangeDirectory = function (ws, json) {
+        console.log("ok2");
+        var fileList = [];
+        var dir = json['directory'];
+        console.log("ok3");
+        //try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
+        fs.readdirSync(root + dir).forEach(function (file) {
+            fileList.push(file);
         });
+        console.log(fileList);
+        ws.send(JSON.stringify({ command: "ChangeDirectory", content: fileList }));
+    };
+    MessageProcessor.Delete = function (ws, json) {
+        var fileList = [];
+        var dir = json['directory'];
+        //only delete files
+        //try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
+        fs.unlinkSync(root + dir);
+        ws.send(JSON.stringify({ command: "deleted" }));
+    };
+    MessageProcessor.Create = function (ws, json) {
+        var fileList = [];
+        var type = json['type'];
+        var dir = json['directory'];
+        //try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
+        //fs.unlinkSync(root+dir)
+        if (type == "File") {
+            fs.open(root + dir, 'w', function (err, file) {
+                if (err)
+                    throw err;
+                console.log('Saved!');
+                ws.send(JSON.stringify({ command: "created_file" }));
+            });
+        }
+        else if (type == "Directory") {
+            if (!fs.existsSync(root + dir)) {
+                fs.mkdirSync(root + dir);
+                ws.send(JSON.stringify({ command: "created_directory" }));
+            }
+        }
+    };
+    MessageProcessor.GetContent = function (ws, json) {
+        var fileList = [];
+        var dir = json['directory'];
+        fs.readdirSync(root + dir).forEach(function (file) {
+            var fileSpecs = { name: "", base64encode: "", type: "" };
+            console.log(root + dir);
+            console.log(file);
+            var type = "";
+            var file64 = "";
+            if (fs.lstatSync(root + dir + file).isDirectory()) {
+                type = "Directory";
+            }
+            else {
+                file64 = fs.readFileSync(root + dir + file, { encoding: 'base64' });
+                type = "File";
+            }
+            var filename = path.basename(root + dir + file);
+            fileSpecs.name = filename;
+            fileSpecs.base64encode = file64;
+            fileSpecs.type = type;
+            //console.log(file);
+            fileList.push(fileSpecs);
+        });
+        console.log(fileList);
+        ws.send(JSON.stringify({ command: "GetContent", content: fileList }));
     };
     //or
     //import imageToBase64 from 'image-to-base64/browser';
@@ -70,8 +130,17 @@ var MessageProcessor = /** @class */ (function () {
             case 'message':
                 MessageProcessor.send(ws, json);
                 break;
-            case 'GetCurrentDir':
-                MessageProcessor.GetCurrentDir(ws, json);
+            case 'Delete':
+                MessageProcessor.Delete(ws, json);
+                break;
+            case 'Create':
+                MessageProcessor.Create(ws, json);
+                break;
+            case 'GetDirContent':
+                MessageProcessor.GetDirContent(ws, json);
+                break;
+            case 'ChangeDirectory':
+                MessageProcessor.ChangeDirectory(ws, json);
                 break;
             case 'GetContent':
                 MessageProcessor.GetContent(ws, json);

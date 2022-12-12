@@ -18,3 +18,4 @@ server.on("connection", function (websocket) {
     });
 });
 console.log("Server running...");
+//tsc -t es5 script.ts

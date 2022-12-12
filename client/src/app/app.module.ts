@@ -6,13 +6,15 @@ import { ChatentryComponent } from './components/chatentry/chatentry.component';
 import { TextinputComponent } from './components/textinput/textinput.component';
 import {FormsModule} from "@angular/forms";
 import { ServermonitorComponent } from './components/servermonitor/servermonitor.component';
+import { ImagesContentComponent } from './images-content/images-content.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ChatentryComponent,
     TextinputComponent,
-    ServermonitorComponent
+    ServermonitorComponent,
+    ImagesContentComponent
   ],
 	imports: [
 		BrowserModule ,

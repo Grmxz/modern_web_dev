@@ -27,11 +27,13 @@ export class TextinputComponent implements OnInit
   {
     console.log( "connect to : " + this.ip );
     this.status.connect( this.ip , this.user );
+    //this.send();
   }
 
-  public send(): void
+  public send(path:string): void
   {
-    console.log( "send '" + this.message + "' to : " + this.recipient );
-    console.log( this.status.send( new Message( this.status.loggedInUser , this.recipient , this.message , false ) ) );
+    //console.log( "send '" + this.message + "' to : " + this.recipient );
+    //console.log( this.status.send( new Message( this.status.loggedInUser , this.recipient , this.message , false ) ) );
+    console.log( this.status.GetContent(path) );
   }
 }
