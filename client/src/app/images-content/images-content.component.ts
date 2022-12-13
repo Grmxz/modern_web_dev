@@ -15,11 +15,20 @@ export class ImagesContentComponent implements OnInit {
     public globalPubSub: GlobalPubSub,
     public status: StatusService) { 
 
+      this.status.reloadComponentCalled.subscribe(
+        () => {
+          //alert('(Component2) Method called!');
+          this.reload();
+        }
+      );
+
   }
   fileList = FileList;
   imageList = FileList;
   directoryList = FileList;
   CurrentDirectory:string = "";
+
+  
  
 
   private checkTypes(){

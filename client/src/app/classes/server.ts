@@ -128,10 +128,14 @@ export class Server
       {
          //let m: Message = new Message( messdata['user'] , this.status.loggedInUser , messdata['content'] , false )
          FileList = messdata['content'];
-         console.log(FileList);
+         //console.log(FileList);
+         this.status.callComponentMethod();
          ImagesContentComponent.arguments(FileList)
          //GlobalPubSub.fireEvent('sampleEventName', args)
-         window.fireAngularEvent('reloadDirectory',0)
+         //window.fireAngularEvent('reloadDirectory',0);
+
+         //console.log(this.status.callComponentMethod()+"yay");
+         //console.log("ouais");
          //ImagesContentComponent.reload();
          //this.status.messages.push( m );
       }

@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Message} from "../classes/message";
 import {Server} from "../classes/server";
+import { Subject } from 'rxjs';
 //import {} from "../images-content/ima";
 
 @Injectable( {
@@ -23,6 +24,18 @@ export class StatusService
       this.messages.push( new Message( "Y" , "X" , "Message 5" , false ) );
 */
    }
+
+
+     // Observable string sources
+   private componentMethodCallSource = new Subject<any>();
+
+   // Observable string streams
+   reloadComponentCalled = this.componentMethodCallSource.asObservable();
+
+   public callComponentMethod() {
+      this.componentMethodCallSource.next();
+      //console.log("callcomponent");
+    }
 
    public connect( ip: string , user: string ): boolean
    {
