@@ -83,20 +83,20 @@ export class Server
          return false;
       if ( this._ws.readyState == 1 )
       {
-         this._ws.send( JSON.stringify( { "command": "GetContent","directory" : "" } ) );
+         this._ws.send( JSON.stringify( { "command": "GetContent","directory" : path } ) );
          //this.status.messages.push( new Message( this.status.loggedInUser , message.recipient , message.content , !message.recipient ) );
          return true;
       }
       return false;
    }
 
-   public Updirectory(): boolean
+   public Updirectory(path:string): boolean
    {
       if ( this._ws === null )
          return false;
       if ( this._ws.readyState == 1 )
       {
-         this._ws.send( JSON.stringify( { "command": "GetContent","directory" : "" } ) );
+         this._ws.send( JSON.stringify( { "command": "GetContent","directory" : path } ) );
          //this.status.messages.push( new Message( this.status.loggedInUser , message.recipient , message.content , !message.recipient ) );
          return true;
       }

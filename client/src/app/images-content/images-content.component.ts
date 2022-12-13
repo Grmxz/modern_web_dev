@@ -19,7 +19,7 @@ export class ImagesContentComponent implements OnInit {
   fileList = FileList;
   imageList = FileList;
   directoryList = FileList;
-
+  CurrentDirectory:string = "";
  
 
   private checkTypes(){
@@ -46,6 +46,7 @@ export class ImagesContentComponent implements OnInit {
     this.fileList = FileList;
     [this.imageList,this.directoryList] = this.checkTypes();
     console.log(this.fileList);
+    this.CurrentDirectory = "";
   }
   
  
@@ -58,8 +59,18 @@ export class ImagesContentComponent implements OnInit {
     //this.ImagesContent = globalPubSub.subscribe('reloadDirectory');
   }
 
-  private UpDirectory():void{
-    console.log( this.status.Updirectory() );
+  public UpDirectory():void{
+    this.CurrentDirectory = this.CurrentDirectory+"../";
+    console.log( this.status.Updirectory(this.CurrentDirectory) );
+    console.log("element from div "+document.getElementById("1")?.className);
   }
+
+  public ChangeDirectory(index:number){
+    console.log(this.directoryList[index].name+'/');
+    this.CurrentDirectory = this.CurrentDirectory+this.directoryList[index].name+'/';
+    this.status.GetContent(this.CurrentDirectory);
+    //this.reload();
+  }
+ 
 
 }

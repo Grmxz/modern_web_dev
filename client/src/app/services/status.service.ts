@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Message} from "../classes/message";
 import {Server} from "../classes/server";
+//import {} from "../images-content/ima";
 
 @Injectable( {
    providedIn: 'root'
@@ -50,11 +51,11 @@ export class StatusService
       return this.connectedServer.GetContent(path);
    }
 
-   public Updirectory(): boolean
+   public Updirectory(path:string): boolean
    {
       if ( this.connectedServer === null )
          return false;
-      return this.connectedServer.Updirectory();
+      return this.connectedServer.Updirectory(path);
    }
 
    public disconnect(): void
