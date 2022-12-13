@@ -30,10 +30,10 @@ export class TextinputComponent implements OnInit
     //this.send();
   }
 
-  public send(path:string): void
+  public send(): void
   {
     //console.log( "send '" + this.message + "' to : " + this.recipient );
     //console.log( this.status.send( new Message( this.status.loggedInUser , this.recipient , this.message , false ) ) );
-    console.log( this.status.GetContent(path) );
+    console.log( this.status.GetContent("") );
   }
 }

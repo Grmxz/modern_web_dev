@@ -7,6 +7,7 @@ import { TextinputComponent } from './components/textinput/textinput.component';
 import {FormsModule} from "@angular/forms";
 import { ServermonitorComponent } from './components/servermonitor/servermonitor.component';
 import { ImagesContentComponent } from './images-content/images-content.component';
+import { UpDirectoryComponent } from './components/up-directory/up-directory.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { ImagesContentComponent } from './images-content/images-content.componen
     ChatentryComponent,
     TextinputComponent,
     ServermonitorComponent,
-    ImagesContentComponent
+    ImagesContentComponent,
+    UpDirectoryComponent
   ],
 	imports: [
 		BrowserModule ,

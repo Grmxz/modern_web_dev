@@ -145,7 +145,7 @@ export class MessageProcessor
 				type = "Directory"
 			}else{
 				file64 = fs.readFileSync(root+dir+file,{encoding: 'base64'});
-				type = "File"
+				type = ""
 			}
 			let filename = path.basename(root+dir+file); 
 	
@@ -205,6 +205,8 @@ export class MessageProcessor
 				break;
 			default:
 				console.log( "unknown command." );
+
+				// add rename
 		}
 	}
 }

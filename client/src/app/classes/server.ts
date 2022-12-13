@@ -46,7 +46,7 @@ export class Server
       let retval = new Server( ws , ip , status );
       ws.onopen = (() => {
          ws.send( JSON.stringify( { command: "open" , "user": user } ) );
-         status.GetContent();
+         status.GetContent("");
          
       });
       ws.onerror = (() => {
