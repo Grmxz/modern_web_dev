@@ -9,7 +9,11 @@
   <li *ngFor="let image of imageList">
     <span class="name">{{image.name}}</span>
     <span class="encode">{{image.base64encode}}</span>
-
   </li>
+  <div class="frame">
+    <input type="text" class="recipient" [(ngModel)]="fileToCreate" placeholder="file to create"/>
+    <button (click)="Create()">create</button>
+ </div>
+ 
 </ul>
 

@@ -35,6 +35,20 @@ export class MessageProcessor
 		}
 	}
 
+	private static sendAll( ws: WebSocket , dir:string, FolderDir:string)
+	{
+		//let recipient: string = json['recipient'];
+		let conn = Status.instance.findConnection( ws );
+		if ( conn )
+		{
+			let sender = conn.userId;
+			Status.instance.connections.forEach( oneConnection => {
+				//if ( oneConnection.userId == recipient || !recipient )
+				oneConnection.ws.send( JSON.stringify( { command: "created",directory:dir, FolderDirectory:FolderDir} ) );
+			} );
+		}
+	}
+
 	private static GetDirContent( ws: WebSocket , json: any )
 	{
 
@@ -95,6 +109,7 @@ export class MessageProcessor
 		let fileList:String[]=[];
 		let type = json['type'];
 		let dir = json['directory'];
+		let FolderDir = json['FolderDirectory'];
 
 		//try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
 		//fs.unlinkSync(root+dir)
@@ -102,7 +117,7 @@ export class MessageProcessor
 			fs.open(root+dir, 'w', function (err:any, file:any) {
 				if (err) throw err;
 				console.log('Saved!');
-				ws.send( JSON.stringify( { command: "created_file"} ) );
+				MessageProcessor.sendAll(ws,dir,FolderDir);
 			});
 		}else if(type=="Directory"){
 			if (!fs.existsSync(root+dir)){
@@ -110,7 +125,7 @@ export class MessageProcessor
 				ws.send( JSON.stringify( { command: "created_directory"} ) );
 			}
 		}
-
+		
 
 	}
 

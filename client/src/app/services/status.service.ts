@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Message} from "../classes/message";
 import {Server} from "../classes/server";
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 //import {} from "../images-content/ima";
 
 @Injectable( {
@@ -28,18 +28,35 @@ export class StatusService
 
      // Observable string sources
    private componentMethodCallSource = new Subject<any>();
-
+   private componentMethodCallSourcePath = new Subject<any>();
+   public pathOfChange:string ="";
    // Observable string streams
    reloadComponentCalled = this.componentMethodCallSource.asObservable();
+   checkPathComponentCalled = this.componentMethodCallSourcePath.asObservable();
+   //pathOfChangeCalled = this.pathOfChange.asObservable();
+
+   public CheckPath(path:string) {
+      this.pathOfChange = path;
+      console.log(this.pathOfChange);
+   }
+
+   public GetPath():string{
+      return this.pathOfChange;
+   }
+
 
    public callComponentMethod() {
       this.componentMethodCallSource.next();
       //console.log("callcomponent");
     }
 
+   public NewPath() {
+      this.componentMethodCallSourcePath.next();
+   }
+
    public connect( ip: string , user: string ): boolean
    {
-      this.connectedServer = Server.connect( ip , user , this );
+      this.connectedServer = Server.connect( ip , user , this);
       return this.connectedServer != null;
    }
 
@@ -69,6 +86,13 @@ export class StatusService
       if ( this.connectedServer === null )
          return false;
       return this.connectedServer.Updirectory(path);
+   }
+
+   public Create(path:string, Dirpath:string, type:boolean): boolean
+   {
+      if ( this.connectedServer === null )
+         return false;
+      return this.connectedServer.Create(path,Dirpath, type);
    }
 
    public disconnect(): void

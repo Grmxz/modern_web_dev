@@ -1,7 +1,6 @@
 import {Message} from "./message";
 import {StatusService} from "../services/status.service";
 import { ImagesContentComponent } from "../images-content/images-content.component";
-import {GlobalPubSub} from "../global-pub-sub.service";
 
 type Image = {
    name: string;
@@ -27,7 +26,7 @@ export class Server
    private _ip: string;
    private _ws: WebSocket | null;
 
-   constructor( ws: WebSocket , ip: string , public status: StatusService )
+   constructor( ws: WebSocket , ip: string , public status: StatusService)
    {
       this._ip = ip;
       this._ws = ws;
@@ -38,12 +37,12 @@ export class Server
       return this._ip;
    }
 
-   public static connect( ip: string , user: string , status: StatusService ): Server
+   public static connect( ip: string , user: string , status: StatusService): Server
    {
       let adr = "ws://" + ip;
       console.log( `connect to : ${adr}` );
       let ws: WebSocket = new WebSocket( adr );
-      let retval = new Server( ws , ip , status );
+      let retval = new Server( ws , ip , status);
       ws.onopen = (() => {
          ws.send( JSON.stringify( { command: "open" , "user": user } ) );
          status.GetContent("");
@@ -103,6 +102,23 @@ export class Server
       return false;
    }
 
+   public Create(path:string,Dirpath:string,Type:boolean): boolean
+   {
+      if ( this._ws === null )
+         return false;
+      if ( this._ws.readyState == 1 )
+      {
+         if(Type==false){
+            this._ws.send( JSON.stringify( { "command": "Create","directory" : path,"FolderDirectory" : Dirpath,"type":"Directory" } ) );
+            return true;
+         }else if(Type==true){
+            this._ws.send( JSON.stringify( { "command": "Create","directory" : path,"FolderDirectory" : Dirpath,"type":"File" } ) );
+            return true;
+         }
+      }
+      return false;
+   }
+
    public disconnect(): void
    {
       if ( this._ws !== null )
@@ -118,14 +134,11 @@ export class Server
    private receive( ev: MessageEvent )
    {
       let messdata = JSON.parse( ev.data );
-      if ( messdata['command'] == 'message' )
-      {
+      if ( messdata['command'] == 'message' ) {
          let m: Message = new Message( messdata['user'] , this.status.loggedInUser , messdata['content'] , false )
          console.log( m );
          this.status.messages.push( m );
-      }
-      if ( messdata['command'] == 'GetContent' )
-      {
+      } else if ( messdata['command'] == 'GetContent' ) {
          //let m: Message = new Message( messdata['user'] , this.status.loggedInUser , messdata['content'] , false )
          FileList = messdata['content'];
          //console.log(FileList);
@@ -138,6 +151,11 @@ export class Server
          //console.log("ouais");
          //ImagesContentComponent.reload();
          //this.status.messages.push( m );
+      } else if ( messdata['command'] == 'created' ) {
+         console.log(messdata);
+         //alert('(Component2) Method called!');
+         this.status.CheckPath(messdata['FolderDirectory']);
+         this.status.NewPath();
       }
    }
 }

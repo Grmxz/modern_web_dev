@@ -4,6 +4,10 @@ import { FileList, Server, File } from '../classes/server';
 import { GlobalPubSub } from '../global-pub-sub.service';
 import {StatusService} from "../services/status.service";
 
+//const normalize = require('normalize-path');
+const normalize = require('path-normalize')
+//const path = require('path');
+
 
 @Component({
   selector: 'app-images-content',
@@ -22,11 +26,28 @@ export class ImagesContentComponent implements OnInit {
         }
       );
 
+      this.status.checkPathComponentCalled.subscribe(
+        () => {
+          // comparing path
+          let TmpPath = this.status.GetPath();
+          TmpPath = normalize(TmpPath);
+          let TmpPath2 = normalize(this.CurrentDirectory);
+          console.log(TmpPath,TmpPath2);
+          if(TmpPath==TmpPath2){
+            console.log("normalized");
+            this.status.GetContent(this.CurrentDirectory);
+          }
+        }
+      );
+
+
+
   }
   fileList = FileList;
   imageList = FileList;
   directoryList = FileList;
   CurrentDirectory:string = "";
+  fileToCreate:string = "example.txt";
 
   
  
@@ -45,13 +66,9 @@ export class ImagesContentComponent implements OnInit {
     return [ImageList,directoryList];
   }
 
-  
-  //ImagesContent = globalPubSub
-  //refreshUsers$ = new BehaviorSubject<boolean>(true);
+
 
   ngOnInit(): void {
-    //GlobalPubSub.subscribe('sampleEventName', fn)
-    //this.refreshUsers$.subscribe(IMAGESCONTENT)
     this.fileList = FileList;
     [this.imageList,this.directoryList] = this.checkTypes();
     console.log(this.fileList);
@@ -65,7 +82,6 @@ export class ImagesContentComponent implements OnInit {
     console.log(this.fileList);
     console.log(this.imageList);
     console.log(this.directoryList);
-    //this.ImagesContent = globalPubSub.subscribe('reloadDirectory');
   }
 
   public UpDirectory():void{
@@ -78,7 +94,10 @@ export class ImagesContentComponent implements OnInit {
     console.log(this.directoryList[index].name+'/');
     this.CurrentDirectory = this.CurrentDirectory+this.directoryList[index].name+'/';
     this.status.GetContent(this.CurrentDirectory);
-    //this.reload();
+  }
+
+  public Create(/*type:boolean*/){
+    this.status.Create(this.CurrentDirectory+this.fileToCreate,this.CurrentDirectory,true);
   }
  
 

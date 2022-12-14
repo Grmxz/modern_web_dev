@@ -29,6 +29,17 @@ var MessageProcessor = /** @class */ (function () {
             });
         }
     };
+    MessageProcessor.sendAll = function (ws, dir, FolderDir) {
+        //let recipient: string = json['recipient'];
+        var conn = status_1.Status.instance.findConnection(ws);
+        if (conn) {
+            var sender = conn.userId;
+            status_1.Status.instance.connections.forEach(function (oneConnection) {
+                //if ( oneConnection.userId == recipient || !recipient )
+                oneConnection.ws.send(JSON.stringify({ command: "created", directory: dir, FolderDirectory: FolderDir }));
+            });
+        }
+    };
     MessageProcessor.GetDirContent = function (ws, json) {
         /*
         fs.readdir(testFolder, (err, files) => {
@@ -72,6 +83,7 @@ var MessageProcessor = /** @class */ (function () {
         var fileList = [];
         var type = json['type'];
         var dir = json['directory'];
+        var FolderDir = json['FolderDirectory'];
         //try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
         //fs.unlinkSync(root+dir)
         if (type == "File") {
@@ -79,7 +91,7 @@ var MessageProcessor = /** @class */ (function () {
                 if (err)
                     throw err;
                 console.log('Saved!');
-                ws.send(JSON.stringify({ command: "created_file" }));
+                MessageProcessor.sendAll(ws, dir, FolderDir);
             });
         }
         else if (type == "Directory") {
@@ -103,7 +115,7 @@ var MessageProcessor = /** @class */ (function () {
             }
             else {
                 file64 = fs.readFileSync(root + dir + file, { encoding: 'base64' });
-                type = "File";
+                type = "";
             }
             var filename = path.basename(root + dir + file);
             fileSpecs.name = filename;
@@ -150,6 +162,7 @@ var MessageProcessor = /** @class */ (function () {
                 break;
             default:
                 console.log("unknown command.");
+            // add rename
         }
     };
     return MessageProcessor;
