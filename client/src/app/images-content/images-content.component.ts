@@ -80,8 +80,15 @@ export class ImagesContentComponent implements OnInit {
   public reload(): void{
     this.fileList = FileList;
     [this.imageList,this.directoryList] = this.checkTypes();
-    this.imageList[0].base64encode = this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' 
-                 + this.imageList[0].base64encode) as string;
+
+    let n = 0;
+    this.imageList.forEach((element:File)=>{
+      element.base64encode = this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' 
+      + this.imageList[n].base64encode) as string;
+      n = n+1
+    })
+
+
     //this.imageList[0].base64encode = this._sanitizer.bypassSecurityTrustUrl(this.imageList[0].base64encode) as string;
     console.log(this.fileList);
     console.log(this.imageList);
