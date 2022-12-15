@@ -50,7 +50,10 @@ export class ImagesContentComponent implements OnInit {
   directoryList = FileList;
   CurrentDirectory:string = "";
   fileToCreate:string = "example.txt";
+  fileToRename:string = "new_name.txt";
   checked = false;
+  Renaming = false;
+  indexToRename:number = 0;
 
   
  
@@ -76,6 +79,11 @@ export class ImagesContentComponent implements OnInit {
     [this.imageList,this.directoryList] = this.checkTypes();
     console.log(this.fileList);
     this.CurrentDirectory = "";
+  }
+
+  public ActiveRenamer(index:number){
+    this.Renaming = true;
+    this.indexToRename = index;
   }
   
  
@@ -124,7 +132,9 @@ export class ImagesContentComponent implements OnInit {
   }
 
   public Rename(/*type:boolean*/){
-    //this.status.Delete(this.CurrentDirectory+this.fileToCreate,this.CurrentDirectory,true);
+    this.status.Rename(// old name file, new name, path ,type
+    this.CurrentDirectory+this.imageList[this.indexToRename].name+'/',this.CurrentDirectory+this.fileToRename,this.CurrentDirectory,true);
+    this.Renaming=false;
   } 
 
 }

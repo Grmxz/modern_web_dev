@@ -136,17 +136,17 @@ export class Server
       return false;
    }
 
-   public Rename(path:string,Dirpath:string,Type:boolean): boolean
+   public Rename(path:string,NewName:string,Dirpath:string,Type:boolean): boolean
    {
       if ( this._ws === null )
          return false;
       if ( this._ws.readyState == 1 )
       {
          if(Type==false){
-            this._ws.send( JSON.stringify( { "command": "Rename","directory" : path,"FolderDirectory" : Dirpath,"type":"Directory" } ) );
+            this._ws.send( JSON.stringify( { "command": "Rename","directory" : path,"Newdirectory": NewName, "FolderDirectory" : Dirpath,"type":"Directory" } ) );
             return true;
          }else if(Type==true){
-            this._ws.send( JSON.stringify( { "command": "Rename","directory" : path,"FolderDirectory" : Dirpath,"type":"File" } ) );
+            this._ws.send( JSON.stringify( { "command": "Rename","directory" : path,"Newdirectory": NewName, "FolderDirectory" : Dirpath,"type":"File" } ) );
             return true;
          }
       }

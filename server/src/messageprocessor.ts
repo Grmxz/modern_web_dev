@@ -111,10 +111,17 @@ export class MessageProcessor
 					MessageProcessor.sendAll(ws,dir,FolderDir);
 				  })
 			} else if(type=="File"){
-				fs.unlinkSync(root+dir);
-				MessageProcessor.sendAll(ws,dir,FolderDir);
-			}
-			
+				//fs.unlinkSync(root+dir);
+				fs.unlink(root+dir, (err => {
+					if (err) {
+						console.log(err);
+					} else {
+					  console.log("\nDeleted file: example_file.txt");
+					  MessageProcessor.sendAll(ws,dir,FolderDir);
+					}  
+
+			}));
+		}
 		} catch (error) {
 			console.error(error);
 		}
@@ -164,7 +171,7 @@ export class MessageProcessor
 		let FolderDir = json['FolderDirectory'];
 
 		//try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
-		fs.renameSync(dir, newDir);
+		fs.renameSync(root+dir, root+newDir);
 		MessageProcessor.sendAll(ws,dir,FolderDir);
 
 	}
@@ -188,31 +195,40 @@ export class MessageProcessor
 			base64encode: string;
 			type: string;
 		};
-		let fileList:any[]=[];
-		let dir = json['directory'];
-		fs.readdirSync(root+dir).forEach((file:any) => {
-			let fileSpecs:FileSpecs = {name :"",base64encode:"",type:""};
-			console.log(root+dir);
-			console.log(file);
-			let type = "";
-			let file64 = "";
-			if(fs.lstatSync(root+dir+file).isDirectory()){
-				type = "Directory"
-			}else{
-				file64 = fs.readFileSync(root+dir+file,{encoding: 'base64'});
-				type = ""
-			}
-			let filename = path.basename(root+dir+file); 
-	
-			fileSpecs.name = filename;
-			fileSpecs.base64encode = file64;
-			fileSpecs.type = type;
-			//console.log(file);
-			fileList.push(fileSpecs);
-		});
 
-		console.log(fileList);
-		ws.send( JSON.stringify( { command: "GetContent" , content: fileList} ) );
+		try {
+			let fileList:any[]=[];
+			let dir = json['directory'];
+			console.log("before reading");
+			fs.readdirSync(root+dir).forEach((file:any) => {
+				let fileSpecs:FileSpecs = {name :"",base64encode:"",type:""};
+				console.log(root+dir);
+				console.log(file);
+				let type = "";
+				let file64 = "";
+				if(fs.lstatSync(root+dir+file).isDirectory()){
+					type = "Directory"
+				}else{
+					file64 = fs.readFileSync(root+dir+file,{encoding: 'base64'});
+					type = ""
+				}
+				let filename = path.basename(root+dir+file); 
+		
+				fileSpecs.name = filename;
+				fileSpecs.base64encode = file64;
+				fileSpecs.type = type;
+				//console.log(file);
+				fileList.push(fileSpecs);
+			});
+	
+			console.log(fileList);
+			ws.send( JSON.stringify( { command: "GetContent" , content: fileList} ) );
+			
+		} catch (error) {
+			
+		}
+
+
 
 		
 	}

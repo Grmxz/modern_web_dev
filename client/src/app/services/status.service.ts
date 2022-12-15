@@ -102,11 +102,11 @@ export class StatusService
       return this.connectedServer.Delete(path,Dirpath, type);
    }
 
-   public Rename(path:string, Dirpath:string, type:boolean): boolean
+   public Rename(path:string,NewName:string, Dirpath:string, type:boolean): boolean
    {
       if ( this.connectedServer === null )
          return false;
-      return this.connectedServer.Rename(path,Dirpath, type);
+      return this.connectedServer.Rename(path,NewName,Dirpath, type);
    }
 
    public disconnect(): void
