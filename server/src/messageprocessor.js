@@ -36,7 +36,7 @@ var MessageProcessor = /** @class */ (function () {
             var sender = conn.userId;
             status_1.Status.instance.connections.forEach(function (oneConnection) {
                 //if ( oneConnection.userId == recipient || !recipient )
-                oneConnection.ws.send(JSON.stringify({ command: "created", directory: dir, FolderDirectory: FolderDir }));
+                oneConnection.ws.send(JSON.stringify({ command: "Done", directory: dir, FolderDirectory: FolderDir }));
             });
         }
     };
@@ -74,10 +74,24 @@ var MessageProcessor = /** @class */ (function () {
     MessageProcessor.Delete = function (ws, json) {
         var fileList = [];
         var dir = json['directory'];
+        var type = json['type'];
+        var FolderDir = json['FolderDirectory'];
         //only delete files
         //try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
-        fs.unlinkSync(root + dir);
-        ws.send(JSON.stringify({ command: "deleted" }));
+        if (type == "Directory") {
+            fs.rmdir(root + dir, { recursive: true }, function (err) {
+                if (err) {
+                    throw err;
+                }
+                console.log("".concat(dir, " is deleted!"));
+                MessageProcessor.sendAll(ws, dir, FolderDir);
+            });
+        }
+        else if (type == "File") {
+            fs.unlinkSync(root + dir);
+            MessageProcessor.sendAll(ws, dir, FolderDir);
+        }
+        //ws.send( JSON.stringify( { command: "deleted"} ) );
     };
     MessageProcessor.Create = function (ws, json) {
         var fileList = [];
@@ -97,7 +111,8 @@ var MessageProcessor = /** @class */ (function () {
         else if (type == "Directory") {
             if (!fs.existsSync(root + dir)) {
                 fs.mkdirSync(root + dir);
-                ws.send(JSON.stringify({ command: "created_directory" }));
+                //ws.send( JSON.stringify( { command: "created_directory"} ) );
+                MessageProcessor.sendAll(ws, dir, FolderDir);
             }
         }
     };

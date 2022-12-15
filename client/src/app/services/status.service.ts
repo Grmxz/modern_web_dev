@@ -95,6 +95,20 @@ export class StatusService
       return this.connectedServer.Create(path,Dirpath, type);
    }
 
+   public Delete(path:string, Dirpath:string, type:boolean): boolean
+   {
+      if ( this.connectedServer === null )
+         return false;
+      return this.connectedServer.Delete(path,Dirpath, type);
+   }
+
+   public Rename(path:string, Dirpath:string, type:boolean): boolean
+   {
+      if ( this.connectedServer === null )
+         return false;
+      return this.connectedServer.Rename(path,Dirpath, type);
+   }
+
    public disconnect(): void
    {
       if ( this.connected )

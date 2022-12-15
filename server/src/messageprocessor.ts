@@ -44,7 +44,7 @@ export class MessageProcessor
 			let sender = conn.userId;
 			Status.instance.connections.forEach( oneConnection => {
 				//if ( oneConnection.userId == recipient || !recipient )
-				oneConnection.ws.send( JSON.stringify( { command: "created",directory:dir, FolderDirectory:FolderDir} ) );
+				oneConnection.ws.send( JSON.stringify( { command: "Done",directory:dir, FolderDirectory:FolderDir} ) );
 			} );
 		}
 	}
@@ -97,11 +97,25 @@ export class MessageProcessor
 	{
 		let fileList:String[]=[];
 		let dir = json['directory'];
+		let type = json['type'];
+		let FolderDir = json['FolderDirectory'];
 		//only delete files
 		//try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
-		fs.unlinkSync(root+dir)
 		
-		ws.send( JSON.stringify( { command: "deleted"} ) );
+		if(type=="Directory"){
+			fs.rmdir(root+dir, { recursive: true }, err => {
+				if (err) {
+				  throw err
+				}
+				console.log(`${dir} is deleted!`);
+				MessageProcessor.sendAll(ws,dir,FolderDir);
+			  })
+		} else if(type=="File"){
+			fs.unlinkSync(root+dir);
+			MessageProcessor.sendAll(ws,dir,FolderDir);
+		}
+
+		//ws.send( JSON.stringify( { command: "deleted"} ) );
 	}
 
 	private static Create( ws: WebSocket , json: any )
@@ -122,10 +136,27 @@ export class MessageProcessor
 		}else if(type=="Directory"){
 			if (!fs.existsSync(root+dir)){
 				fs.mkdirSync(root+dir);
-				ws.send( JSON.stringify( { command: "created_directory"} ) );
+				//ws.send( JSON.stringify( { command: "created_directory"} ) );
+				MessageProcessor.sendAll(ws,dir,FolderDir);
 			}
 		}
 		
+
+	}
+
+
+
+	private static Rename( ws: WebSocket , json: any )
+	{
+		let fileList:String[]=[];
+		let type = json['type'];
+		let dir = json['directory'];
+		let newDir = json['Newdirectory']
+		let FolderDir = json['FolderDirectory'];
+
+		//try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
+		fs.renameSync(dir, newDir);
+		MessageProcessor.sendAll(ws,dir,FolderDir);
 
 	}
 
@@ -205,6 +236,9 @@ export class MessageProcessor
 				break;
 			case 'Create':
 				MessageProcessor.Create( ws ,json);
+				break;
+			case 'Rename':
+				MessageProcessor.Rename( ws ,json);
 				break;
 			case 'GetDirContent':
 				MessageProcessor.GetDirContent( ws ,json);

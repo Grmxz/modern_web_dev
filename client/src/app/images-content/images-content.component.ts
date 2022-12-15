@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { FileList, Server, File } from '../classes/server';
-import { GlobalPubSub } from '../global-pub-sub.service';
 import {StatusService} from "../services/status.service";
+import { DomSanitizer } from '@angular/platform-browser';
 
 //const normalize = require('normalize-path');
 const normalize = require('path-normalize')
@@ -16,8 +16,8 @@ const normalize = require('path-normalize')
 })
 export class ImagesContentComponent implements OnInit {
   constructor(
-    public globalPubSub: GlobalPubSub,
-    public status: StatusService) { 
+    public status: StatusService,
+    private _sanitizer: DomSanitizer) { 
 
       this.status.reloadComponentCalled.subscribe(
         () => {
@@ -48,6 +48,7 @@ export class ImagesContentComponent implements OnInit {
   directoryList = FileList;
   CurrentDirectory:string = "";
   fileToCreate:string = "example.txt";
+  checked = false;
 
   
  
@@ -79,6 +80,9 @@ export class ImagesContentComponent implements OnInit {
   public reload(): void{
     this.fileList = FileList;
     [this.imageList,this.directoryList] = this.checkTypes();
+    this.imageList[0].base64encode = this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' 
+                 + this.imageList[0].base64encode) as string;
+    //this.imageList[0].base64encode = this._sanitizer.bypassSecurityTrustUrl(this.imageList[0].base64encode) as string;
     console.log(this.fileList);
     console.log(this.imageList);
     console.log(this.directoryList);
@@ -99,6 +103,13 @@ export class ImagesContentComponent implements OnInit {
   public Create(/*type:boolean*/){
     this.status.Create(this.CurrentDirectory+this.fileToCreate,this.CurrentDirectory,true);
   }
- 
+
+  public Delete(/*type:boolean*/){
+    this.status.Delete(this.CurrentDirectory+this.fileToCreate,this.CurrentDirectory,true);
+  }
+
+  public Rename(/*type:boolean*/){
+    this.status.Delete(this.CurrentDirectory+this.fileToCreate,this.CurrentDirectory,true);
+  } 
 
 }

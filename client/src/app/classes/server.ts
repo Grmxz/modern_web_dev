@@ -119,6 +119,40 @@ export class Server
       return false;
    }
 
+   public Delete(path:string,Dirpath:string,Type:boolean): boolean
+   {
+      if ( this._ws === null )
+         return false;
+      if ( this._ws.readyState == 1 )
+      {
+         if(Type==false){
+            this._ws.send( JSON.stringify( { "command": "Delete","directory" : path,"FolderDirectory" : Dirpath,"type":"Directory" } ) );
+            return true;
+         }else if(Type==true){
+            this._ws.send( JSON.stringify( { "command": "Delete","directory" : path,"FolderDirectory" : Dirpath,"type":"File" } ) );
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public Rename(path:string,Dirpath:string,Type:boolean): boolean
+   {
+      if ( this._ws === null )
+         return false;
+      if ( this._ws.readyState == 1 )
+      {
+         if(Type==false){
+            this._ws.send( JSON.stringify( { "command": "Rename","directory" : path,"FolderDirectory" : Dirpath,"type":"Directory" } ) );
+            return true;
+         }else if(Type==true){
+            this._ws.send( JSON.stringify( { "command": "Rename","directory" : path,"FolderDirectory" : Dirpath,"type":"File" } ) );
+            return true;
+         }
+      }
+      return false;
+   }
+
    public disconnect(): void
    {
       if ( this._ws !== null )
@@ -151,7 +185,7 @@ export class Server
          //console.log("ouais");
          //ImagesContentComponent.reload();
          //this.status.messages.push( m );
-      } else if ( messdata['command'] == 'created' ) {
+      } else if ( messdata['command'] == 'Done' ) {
          console.log(messdata);
          //alert('(Component2) Method called!');
          this.status.CheckPath(messdata['FolderDirectory']);

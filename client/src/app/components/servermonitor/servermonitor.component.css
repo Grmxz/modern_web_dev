@@ -1,9 +1,9 @@
-/*div {
+div {
   color: white;
   display: inline-block;
   position: fixed;
   right: 0;
-  top: 0;
+  bottom: 0;
   padding: 5px;
   font-size: 10px;
 }
@@ -15,4 +15,3 @@ div.connected {
 div.not-connected {
   background-color: orangered;
 }
-*/
