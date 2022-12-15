@@ -35,6 +35,8 @@ export class ImagesContentComponent implements OnInit {
           console.log(TmpPath,TmpPath2);
           if(TmpPath==TmpPath2){
             console.log("normalized");
+            console.log(this.CurrentDirectory);
+            setTimeout(function() {}, 1000);
             this.status.GetContent(this.CurrentDirectory);
           }
         }
@@ -104,6 +106,7 @@ export class ImagesContentComponent implements OnInit {
   public ChangeDirectory(index:number){
     console.log(this.directoryList[index].name+'/');
     this.CurrentDirectory = this.CurrentDirectory+this.directoryList[index].name+'/';
+    console.log(this.CurrentDirectory);
     this.status.GetContent(this.CurrentDirectory);
   }
 
@@ -111,12 +114,17 @@ export class ImagesContentComponent implements OnInit {
     this.status.Create(this.CurrentDirectory+this.fileToCreate,this.CurrentDirectory,true);
   }
 
-  public Delete(/*type:boolean*/){
-    this.status.Delete(this.CurrentDirectory+this.fileToCreate,this.CurrentDirectory,true);
+  public Delete(index:number/*type:boolean*/){
+    this.CurrentDirectory = normalize(this.CurrentDirectory);
+    console.log(this.imageList[index].name+'/');
+    //this.CurrentDirectory = this.CurrentDirectory+this.directoryList[index].name+'/';
+    this.status.Delete(this.CurrentDirectory+this.imageList[index].name+'/',this.CurrentDirectory,true);
+    
+    //this.status.Delete(this.CurrentDirectory+this.fileToCreate,this.CurrentDirectory,true);
   }
 
   public Rename(/*type:boolean*/){
-    this.status.Delete(this.CurrentDirectory+this.fileToCreate,this.CurrentDirectory,true);
+    //this.status.Delete(this.CurrentDirectory+this.fileToCreate,this.CurrentDirectory,true);
   } 
 
 }

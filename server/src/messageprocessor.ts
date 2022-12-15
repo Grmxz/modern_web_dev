@@ -101,19 +101,24 @@ export class MessageProcessor
 		let FolderDir = json['FolderDirectory'];
 		//only delete files
 		//try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
-		
-		if(type=="Directory"){
-			fs.rmdir(root+dir, { recursive: true }, err => {
-				if (err) {
-				  throw err
-				}
-				console.log(`${dir} is deleted!`);
+		try {
+			if(type=="Directory"){
+				fs.rmdir(root+dir, { recursive: true }, err => {
+					if (err) {
+					  throw err
+					}
+					console.log(`${dir} is deleted!`);
+					MessageProcessor.sendAll(ws,dir,FolderDir);
+				  })
+			} else if(type=="File"){
+				fs.unlinkSync(root+dir);
 				MessageProcessor.sendAll(ws,dir,FolderDir);
-			  })
-		} else if(type=="File"){
-			fs.unlinkSync(root+dir);
-			MessageProcessor.sendAll(ws,dir,FolderDir);
+			}
+			
+		} catch (error) {
+			console.error(error);
 		}
+
 
 		//ws.send( JSON.stringify( { command: "deleted"} ) );
 	}
@@ -128,11 +133,15 @@ export class MessageProcessor
 		//try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
 		//fs.unlinkSync(root+dir)
 		if(type=="File"){
-			fs.open(root+dir, 'w', function (err:any, file:any) {
+			let fileNumber = fs.open(root+dir, 'w', function (err:any, file:any) {
+
 				if (err) throw err;
 				console.log('Saved!');
-				MessageProcessor.sendAll(ws,dir,FolderDir);
+				
 			});
+			
+			console.log(fileNumber);
+			MessageProcessor.sendAll(ws,dir,FolderDir);
 		}else if(type=="Directory"){
 			if (!fs.existsSync(root+dir)){
 				fs.mkdirSync(root+dir);

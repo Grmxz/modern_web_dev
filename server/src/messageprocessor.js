@@ -78,18 +78,23 @@ var MessageProcessor = /** @class */ (function () {
         var FolderDir = json['FolderDirectory'];
         //only delete files
         //try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
-        if (type == "Directory") {
-            fs.rmdir(root + dir, { recursive: true }, function (err) {
-                if (err) {
-                    throw err;
-                }
-                console.log("".concat(dir, " is deleted!"));
+        try {
+            if (type == "Directory") {
+                fs.rmdir(root + dir, { recursive: true }, function (err) {
+                    if (err) {
+                        throw err;
+                    }
+                    console.log("".concat(dir, " is deleted!"));
+                    MessageProcessor.sendAll(ws, dir, FolderDir);
+                });
+            }
+            else if (type == "File") {
+                fs.unlinkSync(root + dir);
                 MessageProcessor.sendAll(ws, dir, FolderDir);
-            });
+            }
         }
-        else if (type == "File") {
-            fs.unlinkSync(root + dir);
-            MessageProcessor.sendAll(ws, dir, FolderDir);
+        catch (error) {
+            console.error(error);
         }
         //ws.send( JSON.stringify( { command: "deleted"} ) );
     };
@@ -101,12 +106,13 @@ var MessageProcessor = /** @class */ (function () {
         //try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
         //fs.unlinkSync(root+dir)
         if (type == "File") {
-            fs.open(root + dir, 'w', function (err, file) {
+            var fileNumber = fs.open(root + dir, 'w', function (err, file) {
                 if (err)
                     throw err;
                 console.log('Saved!');
-                MessageProcessor.sendAll(ws, dir, FolderDir);
             });
+            console.log(fileNumber);
+            MessageProcessor.sendAll(ws, dir, FolderDir);
         }
         else if (type == "Directory") {
             if (!fs.existsSync(root + dir)) {
@@ -115,6 +121,16 @@ var MessageProcessor = /** @class */ (function () {
                 MessageProcessor.sendAll(ws, dir, FolderDir);
             }
         }
+    };
+    MessageProcessor.Rename = function (ws, json) {
+        var fileList = [];
+        var type = json['type'];
+        var dir = json['directory'];
+        var newDir = json['Newdirectory'];
+        var FolderDir = json['FolderDirectory'];
+        //try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
+        fs.renameSync(dir, newDir);
+        MessageProcessor.sendAll(ws, dir, FolderDir);
     };
     MessageProcessor.GetContent = function (ws, json) {
         var fileList = [];
@@ -162,6 +178,9 @@ var MessageProcessor = /** @class */ (function () {
                 break;
             case 'Create':
                 MessageProcessor.Create(ws, json);
+                break;
+            case 'Rename':
+                MessageProcessor.Rename(ws, json);
                 break;
             case 'GetDirContent':
                 MessageProcessor.GetDirContent(ws, json);
