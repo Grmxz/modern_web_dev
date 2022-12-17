@@ -4,6 +4,7 @@ import {Server} from "../classes/server";
 import { Observable, Subject } from 'rxjs';
 //import {} from "../images-content/ima";
 
+
 @Injectable( {
    providedIn: 'root'
 } )
@@ -109,6 +110,13 @@ export class StatusService
       return this.connectedServer.Rename(path,NewName,Dirpath, type);
    }
 
+   public Upload(path:string, Dirpath:string, base64:string): boolean
+   {
+      if ( this.connectedServer === null )
+         return false;
+      return this.connectedServer.Upload(path,Dirpath, base64);
+   }
+
    public disconnect(): void
    {
       if ( this.connected )
@@ -122,3 +130,4 @@ export class StatusService
       return this.connectedServer != null && this.connectedServer.connected;
    }
 }
+

@@ -9,7 +9,7 @@
   <li *ngFor="let image of imageList, let u = index">
 
     <span id= "{{u}}" class="name">{{image.name}}</span>
-    <button (click)="Delete(u)">D;</button>
+    <button (click)="Delete(u)">D</button>
     <button (click)="ActiveRenamer(u)">R</button>
     <!--<input id= "{{u}}" type="checkbox">-->
     <img [src]="image.base64encode">

@@ -176,6 +176,20 @@ export class MessageProcessor
 
 	}
 
+	private static Upload( ws: WebSocket , json: any )
+	{
+		let fileList:String[]=[];
+		let dir = json['directory'];
+		let base64 = json['base64'];
+		let FolderDir = json['FolderDirectory'];
+
+		//try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
+		const buffer = Buffer.from(base64, "base64");
+		fs.writeFileSync(root+dir, buffer);
+		MessageProcessor.sendAll(ws,dir,FolderDir);
+
+	}
+
 	private static GetContent( ws: WebSocket , json: any )
 	{
 		/*imageToBase64("Images/test.jpg") // Path to the image
@@ -264,6 +278,9 @@ export class MessageProcessor
 				break;
 			case 'Rename':
 				MessageProcessor.Rename( ws ,json);
+				break;
+			case 'Rename':
+				MessageProcessor.Upload( ws ,json);
 				break;
 			case 'GetDirContent':
 				MessageProcessor.GetDirContent( ws ,json);

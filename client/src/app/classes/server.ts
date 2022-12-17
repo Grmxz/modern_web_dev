@@ -153,6 +153,20 @@ export class Server
       return false;
    }
 
+   public Upload(path:string,Dirpath:string,base64:string): boolean
+   {
+      if ( this._ws === null )
+         return false;
+      if ( this._ws.readyState == 1 )
+      {
+
+         this._ws.send( JSON.stringify( { "command": "Upload","directory" : path,"base64":base64, "FolderDirectory" : Dirpath } ) );
+         return true;
+
+      }
+      return false;
+   }
+
    public disconnect(): void
    {
       if ( this._ws !== null )
@@ -187,7 +201,7 @@ export class Server
          //this.status.messages.push( m );
       } else if ( messdata['command'] == 'Done' ) {
          console.log(messdata);
-         //alert('(Component2) Method called!');
+         //alert('(Refresh Asked) Method called!');
          this.status.CheckPath(messdata['FolderDirectory']);
          this.status.NewPath();
       }
