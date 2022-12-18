@@ -1,5 +1,4 @@
 .name {
-  
   border: 3px solid #1557d0;
  
   color: black;
@@ -25,12 +24,24 @@ button[target]{
 
 .Names{
   position: relative;
-  width:50%;
+  width:40%;
   float:left;
 }
 
+
+
 .Images{
   position: relative;
-  width:50%;
+  width:60%;
   float:right;
 }
+
+img {
+
+  height: auto;
+
+  max-width: 30%;
+
+}
+
+
