@@ -140,6 +140,16 @@ var MessageProcessor = /** @class */ (function () {
         fs.renameSync(root + dir, root + newDir);
         MessageProcessor.sendAll(ws, dir, FolderDir);
     };
+    MessageProcessor.Upload = function (ws, json) {
+        var fileList = [];
+        var dir = json['directory'];
+        var base64 = json['base64'];
+        var FolderDir = json['FolderDirectory'];
+        //try catch for directory checking  	Error: ENOENT: no such file or directory, scandir './Images/Test/'
+        var buffer = Buffer.from(base64, "base64");
+        fs.writeFileSync(root + dir, buffer);
+        MessageProcessor.sendAll(ws, dir, FolderDir);
+    };
     MessageProcessor.GetContent = function (ws, json) {
         try {
             var fileList_1 = [];
@@ -194,6 +204,9 @@ var MessageProcessor = /** @class */ (function () {
                 break;
             case 'Rename':
                 MessageProcessor.Rename(ws, json);
+                break;
+            case 'Upload':
+                MessageProcessor.Upload(ws, json);
                 break;
             case 'GetDirContent':
                 MessageProcessor.GetDirContent(ws, json);

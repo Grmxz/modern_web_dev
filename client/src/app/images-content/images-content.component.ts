@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { FileList, Server, File } from '../classes/server';
 import {StatusService} from "../services/status.service";
+import {VarSharingService} from "../services/var-sharing.service";
 import { DomSanitizer } from '@angular/platform-browser';
 
 //const normalize = require('normalize-path');
@@ -17,6 +18,7 @@ const normalize = require('path-normalize')
 export class ImagesContentComponent implements OnInit {
   constructor(
     public status: StatusService,
+    public VarSharing: VarSharingService,
     private _sanitizer: DomSanitizer) { 
 
       this.status.reloadComponentCalled.subscribe(
@@ -42,7 +44,7 @@ export class ImagesContentComponent implements OnInit {
         }
       );
 
-
+     
 
   }
   fileList = FileList;
@@ -79,6 +81,7 @@ export class ImagesContentComponent implements OnInit {
     [this.imageList,this.directoryList] = this.checkTypes();
     console.log(this.fileList);
     this.CurrentDirectory = "";
+    this.VarSharing.NewPath();
   }
 
   public ActiveRenamer(index:number){
@@ -107,6 +110,8 @@ export class ImagesContentComponent implements OnInit {
 
   public UpDirectory():void{
     this.CurrentDirectory = this.CurrentDirectory+"../";
+    this.VarSharing.SetPath(this.CurrentDirectory);
+    this.VarSharing.NewPath();
     console.log( this.status.Updirectory(this.CurrentDirectory) );
     console.log("element from div "+document.getElementById("1")?.className);
   }
@@ -114,6 +119,8 @@ export class ImagesContentComponent implements OnInit {
   public ChangeDirectory(index:number){
     console.log(this.directoryList[index].name+'/');
     this.CurrentDirectory = this.CurrentDirectory+this.directoryList[index].name+'/';
+    this.VarSharing.SetPath(this.CurrentDirectory);
+    this.VarSharing.NewPath();
     console.log(this.CurrentDirectory);
     this.status.GetContent(this.CurrentDirectory);
   }
@@ -124,6 +131,8 @@ export class ImagesContentComponent implements OnInit {
 
   public Delete(index:number/*type:boolean*/){
     this.CurrentDirectory = normalize(this.CurrentDirectory);
+    this.VarSharing.SetPath(this.CurrentDirectory);
+    this.VarSharing.NewPath();
     console.log(this.imageList[index].name+'/');
     //this.CurrentDirectory = this.CurrentDirectory+this.directoryList[index].name+'/';
     this.status.Delete(this.CurrentDirectory+this.imageList[index].name+'/',this.CurrentDirectory,true);

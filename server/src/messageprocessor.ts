@@ -279,7 +279,7 @@ export class MessageProcessor
 			case 'Rename':
 				MessageProcessor.Rename( ws ,json);
 				break;
-			case 'Rename':
+			case 'Upload':
 				MessageProcessor.Upload( ws ,json);
 				break;
 			case 'GetDirContent':

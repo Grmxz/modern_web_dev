@@ -1,0 +1,36 @@
+.name {
+  
+  border: 3px solid #1557d0;
+ 
+  color: black;
+  flex-grow: 1;
+  padding: 3px;
+  font-size: 14px;
+}
+h2
+{
+  font-size: 20px;
+    line-height: 40px;
+    background-color:rgb(44, 43, 43);
+    color: whitesmoke;
+
+}
+button[target]{
+  background-color: pink;
+  flex-grow: 1;
+  padding: 8px;
+  font-size: 14px;
+}
+
+
+.Names{
+  position: relative;
+  width:50%;
+  float:left;
+}
+
+.Images{
+  position: relative;
+  width:50%;
+  float:right;
+}

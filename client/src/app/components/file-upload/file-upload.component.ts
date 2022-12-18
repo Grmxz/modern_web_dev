@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StatusService } from './../../services/status.service';
+import { VarSharingService } from './../../services/var-sharing.service';
 //import { ImagesContentComponent } from './../../images-content/images-content.component';
 //const path = require('path')
 //var fs = require('file-system');
@@ -14,11 +15,21 @@ import { StatusService } from './../../services/status.service';
 
 
 export class FileUploadComponent implements OnInit {
-    constructor(public status: StatusService,//public imageComponent: ImagesContentComponent
-    ) { }
+    constructor(public status: StatusService,
+      public VarSharing:VarSharingService
+    ) {
+
+      this.VarSharing.checkPathComponentCalled.subscribe(
+        () => {
+          this.CurrentDirectory = this.status.GetPath();
+          console.log("get new path");
+          console.log(this.CurrentDirectory);
+        }
+      );
+     }
     selectedFile:any;
     currentId: number = 0;
-
+    CurrentDirectory:string="";
 
     
     ImageToEncode: any;
@@ -77,7 +88,8 @@ export class FileUploadComponent implements OnInit {
     public Upload() {
       //this.EncodedImage
       //add name of file
-      //this.status.Upload(this.imageComponent.CurrentDirectory,this.imageComponent.CurrentDirectory,this.EncodedImage);
+      console.log(this.CurrentDirectory);
+      this.status.Upload(this.CurrentDirectory,this.CurrentDirectory,this.EncodedImage);
     }
 
 }

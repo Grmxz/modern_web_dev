@@ -1,21 +1,30 @@
 <meta charset="UTF-8">
+
 <h2>List of Images</h2>
 <ul class="ImagesContent">
+  
   <button (click)="UpDirectory()" type="button">Upper Directory</button>
+  <div class="Names">
   <li *ngFor="let directory of directoryList; let i = index">
     <button id= "{{i}}" value="{{directory.name}}" (click)="ChangeDirectory(i)" type="button" ng-bind="ChangeDirectoryButton">
       <span class="name">{{directory.name}}</span>
     </button>
-  <li *ngFor="let image of imageList, let u = index">
+  <li value ="110" *ngFor="let image of imageList, let u = index">
 
     <span id= "{{u}}" class="name">{{image.name}}</span>
-    <button (click)="Delete(u)">D</button>
+    <button (click)="Delete(u)" name="delete" target="blank">D</button>
     <button (click)="ActiveRenamer(u)">R</button>
     <!--<input id= "{{u}}" type="checkbox">-->
-    <img [src]="image.base64encode">
+   
     <!--<span id= "{{u}}" class="encode">{{image.base64encode}}</span>-->
     
   </li>
+</div>
+  <div class="Images">
+    <li value ="100" *ngFor="let image of imageList, let u = index">
+      <img [src]="image.base64encode">
+    </li>
+  </div>
 
   <div class="frame">
     <input type="text" class="recipient" [(ngModel)]="fileToCreate" placeholder="file to create"/>
